@@ -2,7 +2,7 @@ import * as uuid from 'uuid';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { EmailService } from 'src/email/email.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from './user.entity';
+import { UserEntity } from './entity/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { ulid } from 'ulid';
 
