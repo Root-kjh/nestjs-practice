@@ -1,3 +1,8 @@
+import { Transform } from "class-transformer";
+import { IsString } from "class-validator";
+
 export class VerifyEmailDto{
-    signupVerifyToken: string;
+    @Transform(params => params.value.trim())
+    @IsString()
+    readonly signupVerifyToken: string;
 }
