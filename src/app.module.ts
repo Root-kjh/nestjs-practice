@@ -7,9 +7,20 @@ import { validationSchema } from './config/validationSchema';
 import emailConfig from './config/emailConfig';
 import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.DATABASE_HOST,
+      port: 3306,
+      username: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
+      database: 'nest',
+      entities: [__dirname + `/**/*.entity{.ts|.js}`],
+      synchronize: process.env.DATABASE_SYNCRONIZE === 'true',
+    }),
     ConfigModule.forRoot({
       envFilePath: [`${__dirname}/config/env/.${process.env.NODE_ENV}.env`],
       load: [emailConfig],
