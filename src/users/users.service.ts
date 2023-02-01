@@ -1,8 +1,12 @@
 import * as uuid from 'uuid';
 import { Injectable } from '@nestjs/common';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class UsersService {
+
+    constructor(private readonly emailService: EmailService) {}
+
     async createUser(name:string, email: string, password: string) {
         await this.checkUserExists(email);
 
@@ -13,7 +17,7 @@ export class UsersService {
     }
 
     remove(id: number) {
-        return 'This action removes a #${id} user';
+        return `This action removes a #${id} user`;
     }
 
     private checkUserExists(email: string){
@@ -25,6 +29,6 @@ export class UsersService {
     }
 
     private async sendMemberJoinEmail(email:string, signupVerifyToken: string) {
-        // await this.email
+        await this.emailService.sendMemberJoinVerification(email, signupVerifyToken);
     }
 }
