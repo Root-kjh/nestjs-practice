@@ -11,6 +11,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: [`${__dirname}/config/env/.${process.env.NODE_ENV}.env`],
+      load: [emailConfig],
+      isGlobal: true,
+      validationSchema,
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DATABASE_HOST,
@@ -18,14 +24,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: 'nest',
-      entities: [__dirname + `/**/*.entity{.ts|.js}`],
-      synchronize: process.env.DATABASE_SYNCRONIZE === 'true',
-    }),
-    ConfigModule.forRoot({
-      envFilePath: [`${__dirname}/config/env/.${process.env.NODE_ENV}.env`],
-      load: [emailConfig],
-      isGlobal: true,
-      validationSchema,
+      entities: [__dirname + `/**/*.entity{.ts,.js}`],
+      synchronize: process.env.DATABASE_SYNCHRONIZE === 'true',
     }),
   ],
   controllers: [AppController, UsersController],
