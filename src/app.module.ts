@@ -1,19 +1,16 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { EmailService } from './email/email.service';
 import { validationSchema } from './config/validationSchema';
 import emailConfig from './config/emailConfig';
-import { UsersController } from './users/users.controller';
-import { UsersService } from './users/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './users/users.module';
+import authConfig from './config/authConfig';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: [`${__dirname}/config/env/.${process.env.NODE_ENV}.env`],
-      load: [emailConfig],
+      load: [emailConfig, authConfig],
       isGlobal: true,
       validationSchema,
     }),
@@ -30,9 +27,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       migrations: [__dirname + `/**/migrations/*{.ts,.js}`],
       migrationsTableName: 'migrations'
     }),
+    UsersModule,
   ],
-  controllers: [AppController, UsersController],
-  providers: [AppService, UsersService, EmailService],
+  controllers: [],
+  providers: [],
   
 })
 export class AppModule {}
