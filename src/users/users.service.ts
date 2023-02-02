@@ -1,10 +1,12 @@
 import * as uuid from 'uuid';
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { EmailService } from 'src/email/email.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entity/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { ulid } from 'ulid';
+import { AuthService } from 'src/auth/auth.service';
+import { UserInfo } from './assets/UserInfo';
 
 @Injectable()
 export class UsersService {
@@ -12,8 +14,24 @@ export class UsersService {
     constructor(
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
         private dataSource: DataSource,
-        private readonly emailService: EmailService
+        private readonly emailService: EmailService,
+        private readonly authService: AuthService,
         ) {}
+
+    async login( email: string, password: string): Promise<string> {
+        const user = await this.userRepository.findOne({
+            where: { email, password }
+        });
+        if (!user) {
+            throw new NotFoundException('유저가 존재하지 않습니다.');
+        }
+
+        return this.authService.login({
+            id: user.id,
+            name: user.name,
+            email: user.email
+        })
+    }
 
     async createUser(name:string, email: string, password: string) {
         const isUserExist = await this.checkUserExists(email);
@@ -39,6 +57,21 @@ export class UsersService {
         }
     }
 
+    async getUserInfo(userId: string): Promise<UserInfo> {
+        const user = await this.userRepository.findOne({
+            where: { id: userId }
+        });
+        if (!user) {
+            throw new NotFoundException('유저가 존재하지 않습니다.');
+        }
+
+        return {
+            id: user.id,
+            name: user.name,
+            email: user.email
+        }
+    }
+
     remove(id: number) {
         return `This action removes a #${id} user`;
     }
@@ -47,7 +80,7 @@ export class UsersService {
         const user = await this.userRepository.findOne({
             where: { email: emailAddress }
         });
-        return user !== undefined;
+        return user !== null;
     }
 
     private async saveUser(name: string, email: string, password: string, signupVerifyToken: string){
@@ -62,5 +95,21 @@ export class UsersService {
 
     private async sendMemberJoinEmail(email:string, signupVerifyToken: string) {
         await this.emailService.sendMemberJoinVerification(email, signupVerifyToken);
+    }
+
+    async verifyEmail(signupVerifyToken: string): Promise<string> {
+        const user = await this.userRepository.findOne({
+            where: { signupVerifyToken }
+        });
+
+        if (!user) {
+            throw new NotFoundException('유저가 존재하지 않습니다.');
+        }
+
+        return this.authService.login({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+        })
     }
 }
