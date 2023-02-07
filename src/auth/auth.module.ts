@@ -5,6 +5,6 @@ import { AuthService } from './auth.service';
   imports: [],
   controllers: [],
   providers: [AuthService],
-  exports: [AuthService]
+  exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

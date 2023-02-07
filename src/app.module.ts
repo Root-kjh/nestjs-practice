@@ -4,6 +4,7 @@ import { validationSchema } from './config/validationSchema';
 import emailConfig from './config/emailConfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
+import { ExceptionModule } from './exception/exception.module';
 import authConfig from './config/authConfig';
 
 @Module({
@@ -25,12 +26,12 @@ import authConfig from './config/authConfig';
       synchronize: false,
       migrationsRun: false,
       migrations: [__dirname + `/**/migrations/*{.ts,.js}`],
-      migrationsTableName: 'migrations'
+      migrationsTableName: 'migrations',
     }),
     UsersModule,
+    ExceptionModule,
   ],
   controllers: [],
   providers: [],
-  
 })
 export class AppModule {}
