@@ -10,7 +10,7 @@ import { LoggerModule } from './logger/logger.module';
 import { BatchModule } from './batch/batch.module';
 import { HealthCheckController } from './health-check/health-check.controller';
 import { TerminusModule } from '@nestjs/terminus';
-import { HttpModule } from '@nestjs/axios'
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
