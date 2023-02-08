@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { ExceptionModule } from './exception/exception.module';
 import authConfig from './config/authConfig';
 import { LoggerModule } from './logger/logger.module';
+import { BatchModule } from './batch/batch.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { LoggerModule } from './logger/logger.module';
     UsersModule,
     ExceptionModule,
     LoggerModule,
+    BatchModule,
   ],
   controllers: [],
   providers: [],
