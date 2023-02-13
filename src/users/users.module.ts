@@ -3,14 +3,17 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { EmailModule } from 'src/email/email.module';
-import { CreateUserHandler } from './command/create-user.handler';
-import { DeleteUserHandler } from './command/delete-user.handler';
-import { LoginHandler } from './command/login.handler';
-import { VerifyEmailHandler } from './command/verify-email.handler';
-import { UserEntity } from './entity/user.entity';
-import { UserEventsHandler } from './event/user-events.handler';
-import { GetUserInfoQueryHandler } from './query/get-user-info.handler';
-import { UsersController } from './users.controller';
+import { CreateUserHandler } from './application/command/create-user.handler';
+import { DeleteUserHandler } from './application/command/delete-user.handler';
+import { LoginHandler } from './application/command/login.handler';
+import { VerifyEmailHandler } from './application/command/verify-email.handler';
+import { UserEntity } from './infra/db/entity/user.entity';
+import { UserEventsHandler } from './application/event/user-events.handler';
+import { GetUserInfoQueryHandler } from './application/query/get-user-info.handler';
+import { UsersController } from './interface/users.controller';
+import { UserRepository } from './infra/db/repository/UserRepository';
+import { EmailService } from './infra/adapter/email.service';
+import { UserFactory } from './domain/user.factory';
 
 @Module({
   imports: [
@@ -29,6 +32,9 @@ import { UsersController } from './users.controller';
     LoginHandler,
     UserEventsHandler,
     GetUserInfoQueryHandler,
+    UserFactory,
+    { provide: 'UserRepository', useClass: UserRepository },
+    { provide: 'EmailService', useClass: EmailService },
   ],
 })
 export class UsersModule {}

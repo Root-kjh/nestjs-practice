@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { UserEntity } from '../entity/user.entity';
+import { UserEntity } from '../../infra/db/entity/user.entity';
 import { DeleteUserCommand } from './delete-user.command';
 
 @Injectable()
